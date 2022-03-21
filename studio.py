@@ -28,6 +28,7 @@ def new_question():
 
 def add_subject():
     """ adds a new subject which is an empty list to the questions dictionary """
+    see_subjects()
     subject = input("Inserisci il nome della materia da aggiungere: ")
     if subject not in questions:
         questions[subject] = []
@@ -38,6 +39,7 @@ def add_subject():
 
 def remove_subject():
     """ remove a subject """
+    see_subjects()
     subject = input("Inserisci il nome della materia da eliminare: ")
     del questions[subject]
     dump_questions()
@@ -45,8 +47,10 @@ def remove_subject():
 
 def add_questions():
     """ adds a number of questions to specified subject """
+    see_subjects()
     subject = input("Inserisci il nome della materia a cui aggiungere le domande: ")
     n_questions = input("Inserisci il numero di domande da aggiungere: ")
+    n_questions = int(n_questions)
     for i in range(n_questions):
         questions[subject].append(input("Inserisci la domanda: "))
         print("La domanda è stata aggiunta!")
@@ -55,8 +59,10 @@ def add_questions():
 
 def remove_last_questions():
     """ remove the last X questions"""
+    see_subjects()
     subject = input("Inserisci il nome della materia a cui rimuovere le domande: ")
     n_questions = input("Inserisci il numero di domande da rimuovere: ")
+    n_questions = int(n_questions)
     for i in range(n_questions):
         q = questions[subject].pop(-1)
         print(f"Ecco la domanda rimossa: {q}")
@@ -66,6 +72,7 @@ def remove_last_questions():
 def add_message():
     """ adds some new messages to display """
     n_messages = input("Inserisci il numero di messaggi da aggiungere: ")
+    n_messages = int(n_messages)
     for i in range(n_messages):
         new_message = input("Inserisci un nuovo messaggio d'incoraggiamento: ")
         messages.append(new_message)
@@ -76,14 +83,39 @@ def add_message():
 def remove_last_messages():
     """ remove the last X messages"""
     n_messages = input("inserisci il numero di messaggi da rimuovere: ")
+    n_messages = int(n_messages)
     for i in range(n_messages):
         m = messages.pop(-1)
         print(f"Ecco il messaggio rimosso: {m}")
-    dump_messages()
+    return dump_messages()
+
+
+def see_subjects():
+    """ see all the subjects """
+    subject_list = [key for key in questions]
+    print(f"Ecco la lista delle materie: "
+          f"\n{subject_list}")
+
+
+def see_questions():
+    """ see all the questions of a subject"""
+    see_subjects()
+    subject = input(f"Inserisci la materia di cui vedere le domande: ")
+    print(f"Ecco le domande: ")
+    for question in questions[subject]:
+        print(question)
+
+
+def see_messages():
+    """ sees all the messages"""
+    print("Ecco tutti i messaggi: ")
+    for message in messages:
+        print(message)
 
 
 def interrogation():
     """ starts the loop of the interrogation, asking if random or linear order, running the loops """
+    see_subjects()
     subject = input("Quale materia vuoi ripetere?: ")
     interrogation_type = input(f"Vuoi le domande in ordine sparso oppure ordinato? Digita sparso/ordinato: ").lower()
     while True:
@@ -103,30 +135,34 @@ def interrogation():
 option_list = {"1": "Fatti interrogare",
                "2": "Aggiungi una materia",
                "3": "Rimuovi una materia",
-               "4": "Aggiungi domande",
-               "5": "Rimuovi ultime domande",
-               "6": "Aggiungi messaggi",
-               "7": "Rimuovi messaggi",
-               "8" : "Esci"}
-
+               "4": "Guarda le domande",
+               "5": "Aggiungi domande",
+               "6": "Rimuovi ultime domande",
+               "7": "Aggiungi messaggi",
+               "8": "Rimuovi messaggi",
+               "9": "Vedi tutti i messaggi",
+               "0": "Esci"}
 
 func_list = [interrogation,
              add_subject,
              remove_subject,
+             see_questions,
              add_questions,
              remove_last_questions,
              add_message,
-             remove_last_messages]
+             remove_last_messages,
+             see_messages]
+
 
 def print_menu():
     print("\n #######################")
     for key in option_list.keys():
-        print (key, '--', option_list[key] )
+        print(key, '--', option_list[key])
     print("####################### \n")
 
 
 def program():
-    while(True):
+    while (True):
         print_menu()
         option = int(input('Scegli: '))
         if option == 1:
@@ -144,6 +180,10 @@ def program():
         elif option == 7:
             func_list[6]()
         elif option == 8:
+            func_list[7]()
+        elif option == 9:
+            func_list[8]()
+        elif option == 0:
             print("Grazie per aver ripetuto con me!")
             exit()
         else:
