@@ -87,7 +87,7 @@ def remove_last_messages():
     for i in range(n_messages):
         m = messages.pop(-1)
         print(f"Ecco il messaggio rimosso: {m}")
-    return dump_messages()
+    dump_messages()
 
 
 def see_subjects():
