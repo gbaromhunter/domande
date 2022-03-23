@@ -41,7 +41,11 @@ def remove_subject():
     """ remove a subject """
     see_subjects()
     subject = input("Inserisci il nome della materia da eliminare: ")
-    del questions[subject]
+    if subject not in questions:
+        print("La materia non esiste. Riprova.")
+        remove_subject()
+    else:
+        del questions[subject]
     dump_questions()
 
 
@@ -49,24 +53,32 @@ def add_questions():
     """ adds a number of questions to specified subject """
     see_subjects()
     subject = input("Inserisci il nome della materia a cui aggiungere le domande: ")
-    n_questions = input("Inserisci il numero di domande da aggiungere: ")
-    n_questions = int(n_questions)
-    for i in range(n_questions):
-        questions[subject].append(input("Inserisci la domanda: "))
-        print("La domanda è stata aggiunta!")
-    dump_questions()
+    if subject not in questions:
+        print("La materia non esiste. Riprova.")
+        add_questions()
+    else:
+        n_questions = input("Inserisci il numero di domande da aggiungere: ")
+        n_questions = int(n_questions)
+        for i in range(n_questions):
+            questions[subject].append(input("Inserisci la domanda: "))
+            print("La domanda è stata aggiunta!")
+        dump_questions()
 
 
 def remove_last_questions():
     """ remove the last X questions"""
     see_subjects()
     subject = input("Inserisci il nome della materia a cui rimuovere le domande: ")
-    n_questions = input("Inserisci il numero di domande da rimuovere: ")
-    n_questions = int(n_questions)
-    for i in range(n_questions):
-        q = questions[subject].pop(-1)
-        print(f"Ecco la domanda rimossa: {q}")
-    dump_questions()
+    if subject not in questions:
+        print("La materia non esiste. Riprova.")
+        remove_last_questions()
+    else:
+        n_questions = input("Inserisci il numero di domande da rimuovere: ")
+        n_questions = int(n_questions)
+        for i in range(n_questions):
+            q = questions[subject].pop(-1)
+            print(f"Ecco la domanda rimossa: {q}")
+        dump_questions()
 
 
 def add_message():
@@ -101,9 +113,13 @@ def see_questions():
     """ see all the questions of a subject"""
     see_subjects()
     subject = input(f"Inserisci la materia di cui vedere le domande: ")
-    print(f"Ecco le domande: ")
-    for question in questions[subject]:
-        print(question)
+    if subject not in questions:
+        print("La materia non esiste. Riprova.")
+        see_questions()
+    else:
+        print(f"Ecco le domande: ")
+        for question in questions[subject]:
+            print(question)
 
 
 def see_messages():
@@ -117,19 +133,23 @@ def interrogation():
     """ starts the loop of the interrogation, asking if random or linear order, running the loops """
     see_subjects()
     subject = input("Quale materia vuoi ripetere?: ")
-    interrogation_type = input(f"Vuoi le domande in ordine sparso oppure ordinato? Digita sparso/ordinato: ").lower()
-    while True:
-        questions_session = questions[subject][:] if interrogation_type == "ordinato" else random.sample(
-            questions[subject],
-            len(questions[subject]))
+    if subject not in questions:
+        print("La materia non esiste. Riprova.")
+        interrogation()
+    else:
+        interrogation_type = input(f"Vuoi le domande in ordine sparso oppure ordinato? Digita sparso/ordinato: ").lower()
         while True:
-            q = questions_session.pop(0)
-            print(f"Eccoti la domanda: {q}")
-            print(f"{random.choice(messages)}")
-            if not new_question() or len(questions_session) == 0:
+            questions_session = questions[subject][:] if interrogation_type == "ordinato" else random.sample(
+                questions[subject],
+                len(questions[subject]))
+            while True:
+                q = questions_session.pop(0)
+                print(f"Eccoti la domanda: {q}")
+                print(f"{random.choice(messages)}")
+                if not new_question() or len(questions_session) == 0:
+                    break
+            if not input("Le domande sono finite. Vuoi ricominciare?: ").lower() == "si":
                 break
-        if not input("Le domande sono finite. Vuoi ricominciare?: ").lower() == "si":
-            break
 
 
 option_list = {"1": "Fatti interrogare",
